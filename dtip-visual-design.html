@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTIP Visual Design Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 50px;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h2 {
+            color: #60a5fa;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 10px;
+        }
+        
+        .diagram {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        /* System Architecture Diagram */
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .layer {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .layer:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+        }
+        
+        .layer-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .layer-desc {
+            font-size: 0.9em;
+            color: #cbd5e1;
+        }
+        
+        .consumer-layer {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: #22c55e;
+        }
+        
+        .consumer-layer .layer-title {
+            color: #22c55e;
+        }
+        
+        .blockchain-layer {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: #a855f7;
+        }
+        
+        .blockchain-layer .layer-title {
+            color: #a855f7;
+        }
+        
+        .researcher-layer {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+        
+        .researcher-layer .layer-title {
+            color: #ef4444;
+        }
+        
+        /* Smart Contract Flow */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .flow-box {
+            background: #334155;
+            border: 2px solid #475569;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .flow-box:hover {
+            background: #3b4a63;
+            border-color: #60a5fa;
+        }
+        
+        .flow-arrow {
+            color: #38bdf8;
+            font-size: 2em;
+            margin: 0 10px;
+        }
+        
+        .flow-title {
+            color: #60a5fa;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        /* Data Structure Visualization */
+        .data-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .data-header {
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .data-field {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .data-field:last-child {
+            border-bottom: none;
+        }
+        
+        .field-name {
+            color: #38bdf8;
+            font-weight: 600;
+            min-width: 180px;
+        }
+        
+        .field-value {
+            color: #94a3b8;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* User Interface Mockup */
+        .ui-mockup {
+            background: #f8fafc;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .ui-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .ui-logo {
+            color: white;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        
+        .ui-nav {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .ui-nav-item {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        
+        .ui-body {
+            padding: 30px;
+            background: #ffffff;
+            color: #1e293b;
+        }
+        
+        .ui-search {
+            background: #f1f5f9;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .ui-search input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1em;
+            outline: none;
+            color: #1e293b;
+        }
+        
+        .threat-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #ef4444;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+        
+        .threat-type {
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+        
+        .threat-value {
+            color: #1e293b;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .architecture-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-container {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 DTIP Visual Design Document</h1>
+        <p class="subtitle">Decentralized Threat Intelligence Platform - System Architecture & Interface Design</p>
+        
+        <!-- System Architecture -->
+        <div class="section">
+            <h2>1. System Architecture Overview</h2>
+            <div class="diagram">
+                <div class="architecture-grid">
+                    <div class="layer consumer-layer">
+                        <div class="layer-title">👥 Consumers</div>
+                        <div class="layer-desc">Public Read Access<br>Firewalls, SIEM, SOC Teams</div>
+                    </div>
+                    <div class="layer consumer-layer">
+                        <div class="layer-title">🔍 Query Layer</div>
+                        <div class="layer-desc">API & Web Interface<br>Real-time IOC Lookup</div>
+                    </div>
+                    <div class="layer consumer-layer">
+                        <div class="layer-title">📊 Analytics</div>
+                        <div class="layer-desc">Threat Analysis<br>Trend Detection</div>
+                    </div>
+                    
+                    <div class="layer blockchain-layer" style="grid-column: 1 / -1;">
+                        <div class="layer-title">⛓️ Ethereum Blockchain Layer</div>
+                        <div class="layer-desc">Smart Contracts • Immutable Ledger • Decentralized Storage • Consensus Mechanism</div>
+                    </div>
+                    
+                    <div class="layer researcher-layer">
+                        <div class="layer-title">🔬 Researchers</div>
+                        <div class="layer-desc">Verified Experts<br>Write Permissions</div>
+                    </div>
+                    <div class="layer researcher-layer">
+                        <div class="layer-title">✍️ Submission</div>
+                        <div class="layer-desc">Signed Reports<br>IOC Data</div>
+                    </div>
+                    <div class="layer researcher-layer">
+                        <div class="layer-title">🔐 Authentication</div>
+                        <div class="layer-desc">Cryptographic Signing<br>Identity Verification</div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #22c55e;"></div>
+                        <span>Consumer Layer (Permissionless)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #a855f7;"></div>
+                        <span>Blockchain Layer (Core)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ef4444;"></div>
+                        <span>Researcher Layer (Permissioned)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Smart Contract Flow -->
+        <div class="section">
+            <h2>2. Smart Contract Interaction Flow</h2>
+            <div class="diagram">
+                <div class="flow-container">
+                    <div class="flow-box">
+                        <div class="flow-title">1. Off-Chain Signing</div>
+                        <div>Researcher signs threat report with private key</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="flow-title">2. Submit Transaction</div>
+                        <div>Report + signature sent to smart contract</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="flow-title">3. Verify Signature</div>
+                        <div>ecrecover validates researcher identity</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="flow-title">4. Generate Hash</div>
+                        <div>keccak256 creates unique report ID</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="flow-title">5. Store on Chain</div>
+                        <div>Immutable record added to blockchain</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Structure -->
+        <div class="section">
+            <h2>3. Threat Intelligence Data Structure</h2>
+            <div class="diagram">
+                <div class="data-card">
+                    <div class="data-header">📄 Threat Report Object</div>
+                    <div class="data-field">
+                        <div class="field-name">Report ID (Hash)</div>
+                        <div class="field-value">0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">IOC Type</div>
+                        <div class="field-value">Malicious IP / File Hash / Domain / Wallet</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">IOC Value</div>
+                        <div class="field-value">192.168.1.100 | SHA256:abc123... | evil.com</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Threat Category</div>
+                        <div class="field-value">C2 Server / Ransomware / Phishing / Cryptojacking</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Researcher Address</div>
+                        <div class="field-value">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb9</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Timestamp</div>
+                        <div class="field-value">1729609200 (Unix epoch)</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Digital Signature</div>
+                        <div class="field-value">0x8f7d3b2a1e4c5a6d9b8f7e3c2a1d...</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Confidence Score</div>
+                        <div class="field-value">High / Medium / Low</div>
+                    </div>
+                </div>
+                
+                <div class="data-card">
+                    <div class="data-header">🔐 Access Control Registry</div>
+                    <div class="data-field">
+                        <div class="field-name">Researcher Wallet</div>
+                        <div class="field-value">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb9</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Organization</div>
+                        <div class="field-value">ACME Security Research</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Verification Status</div>
+                        <div class="field-value">✓ Verified</div>
+                    </div>
+                    <div class="data-field">
+                        <div class="field-name">Permissions</div>
+                        <div class="field-value">WRITE | UPDATE | REVOKE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Interface -->
+        <div class="section">
+            <h2>4. User Interface Mockup - Consumer Portal</h2>
+            <div class="diagram">
+                <div class="ui-mockup">
+                    <div class="ui-header">
+                        <div class="ui-logo">🛡️ DTIP Network</div>
+                        <div class="ui-nav">
+                            <div class="ui-nav-item">Search IOCs</div>
+                            <div class="ui-nav-item">Analytics</div>
+                            <div class="ui-nav-item">API Docs</div>
+                        </div>
+                    </div>
+                    <div class="ui-body">
+                        <h3 style="color: #1e293b; margin-bottom: 20px;">🔍 Query Threat Intelligence</h3>
+                        <div class="ui-search">
+                            <input type="text" placeholder="Search by IP, domain, file hash, or wallet address...">
+                            <span style="color: #6366f1; font-weight: bold; cursor: pointer;">Search</span>
+                        </div>
+                        
+                        <h4 style="color: #475569; margin: 25px 0 15px 0;">Recent Threats</h4>
+                        
+                        <div class="threat-item">
+                            <div class="threat-type">⚠️ MALICIOUS IP - C2 SERVER</div>
+                            <div class="threat-value">192.0.2.45</div>
+                            <div style="color: #64748b; font-size: 0.85em; margin-top: 8px;">
+                                Reported by: 0x742d...bEb9 • Confidence: High • 2 hours ago
+                            </div>
+                        </div>
+                        
+                        <div class="threat-item" style="border-left-color: #f59e0b;">
+                            <div class="threat-type" style="color: #f59e0b;">⚠️ RANSOMWARE WALLET</div>
+                            <div class="threat-value">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</div>
+                            <div style="color: #64748b; font-size: 0.85em; margin-top: 8px;">
+                                Reported by: 0x8f3c...2d19 • Confidence: High • 5 hours ago
+                            </div>
+                        </div>
+                        
+                        <div class="threat-item" style="border-left-color: #8b5cf6;">
+                            <div class="threat-type" style="color: #8b5cf6;">⚠️ PHISHING DOMAIN</div>
+                            <div class="threat-value">secure-bank-login.xyz</div>
+                            <div style="color: #64748b; font-size: 0.85em; margin-top: 8px;">
+                                Reported by: 0x9a2f...8c3e • Confidence: Medium • 1 day ago
+                            </div>
+                        </div>
+                        
+                        <div class="threat-item" style="border-left-color: #06b6d4;">
+                            <div class="threat-type" style="color: #06b6d4;">⚠️ MALWARE HASH (SHA256)</div>
+                            <div class="threat-value">44d88612fea8a8f36de82e1278abb02f</div>
+                            <div style="color: #64748b; font-size: 0.85em; margin-top: 8px;">
+                                Reported by: 0x5e7b...4f2a • Confidence: High • 2 days ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Researcher Onboarding Process -->
+        <div class="section">
+            <h2>5. Researcher Onboarding & Governance Process</h2>
+            <p style="color: #94a3b8; margin-bottom: 25px;">The most critical aspect of platform security: rigorous vetting combined with transparent on-chain authorization</p>
+            
+            <div class="diagram">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                    <!-- Off-Chain Column -->
+                    <div style="background: rgba(239, 68, 68, 0.05); border: 2px solid #ef4444; border-radius: 12px; padding: 25px;">
+                        <h3 style="color: #ef4444; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.5em;">🔒</span> OFF-CHAIN VETTING
+                        </h3>
+                        <p style="color: #cbd5e1; font-size: 0.95em; margin-bottom: 20px;">Rigorous human-driven verification process</p>
+                        
+                        <div class="flow-box" style="margin: 15px 0; background: rgba(30, 41, 59, 0.5);">
+                            <div class="flow-title" style="color: #fca5a5;">STEP 1: Application</div>
+                            <div style="font-size: 0.9em;">Candidate submits formal application with credentials and expertise</div>
+                        </div>
+                        
+                        <div style="text-align: center; color: #ef4444; font-size: 1.5em; margin: 10px 0;">↓</div>
+                        
+                        <div class="flow-box" style="margin: 15px 0; background: rgba(30, 41, 59, 0.5);">
+                            <div class="flow-title" style="color: #fca5a5;">STEP 2: Sponsorship</div>
+                            <div style="font-size: 0.9em;">2 existing researchers vouch for candidate's credibility</div>
+                        </div>
+                        
+                        <div style="text-align: center; color: #ef4444; font-size: 1.5em; margin: 10px 0;">↓</div>
+                        
+                        <div class="flow-box" style="margin: 15px 0; background: rgba(30, 41, 59, 0.5);">
+                            <div class="flow-title" style="color: #fca5a5;">STEP 3: Due Diligence</div>
+                            <div style="font-size: 0.9em;">
+                                <div style="margin-top: 10px;">✓ Identity verification</div>
+                                <div>✓ Track record analysis</div>
+                                <div>✓ Expertise assessment</div>
+                                <div>✓ Reputation check</div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; color: #ef4444; font-size: 1.5em; margin: 10px 0;">↓</div>
+                        
+                        <div class="flow-box" style="margin: 15px 0; background: rgba(30, 41, 59, 0.5);">
+                            <div class="flow-title" style="color: #fca5a5;">STEP 4: Admin Approval</div>
+                            <div style="font-size: 0.9em;">Final authorization by platform administrator</div>
+                        </div>
+                    </div>
+                    
+                    <!-- On-Chain Column -->
+                    <div style="background: rgba(34, 197, 94, 0.05); border: 2px solid #22c55e; border-radius: 12px; padding: 25px;">
+                        <h3 style="color: #22c55e; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.5em;">⛓️</span> ON-CHAIN ACTION
+                        </h3>
+                        <p style="color: #cbd5e1; font-size: 0.95em; margin-bottom: 20px;">Transparent, immutable blockchain transaction</p>
+                        
+                        <div style="background: rgba(30, 41, 59, 0.7); border: 2px solid #22c55e; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                            <div style="color: #86efac; font-weight: bold; margin-bottom: 15px; font-size: 1.1em;">Smart Contract Call</div>
+                            <div style="font-family: 'Courier New', monospace; color: #cbd5e1; font-size: 0.9em;">
+                                <div style="margin: 8px 0;"><span style="color: #22c55e;">function:</span> grantRole()</div>
+                                <div style="margin: 8px 0;"><span style="color: #22c55e;">role:</span> RESEARCHER_ROLE</div>
+                                <div style="margin: 8px 0;"><span style="color: #22c55e;">address:</span> 0x742d35Cc...</div>
+                                <div style="margin: 8px 0;"><span style="color: #22c55e;">caller:</span> ADMIN_ROLE</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(34, 197, 94, 0.1); border-radius: 8px; padding: 15px; margin: 20px 0;">
+                            <div style="color: #86efac; font-weight: bold; margin-bottom: 10px;">✓ Transaction Recorded</div>
+                            <div style="font-size: 0.9em; color: #cbd5e1;">
+                                <div style="margin: 5px 0;">• Permanent blockchain record</div>
+                                <div style="margin: 5px 0;">• Publicly auditable</div>
+                                <div style="margin: 5px 0;">• Timestamp verified</div>
+                                <div style="margin: 5px 0;">• Cannot be altered</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid #a855f7; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                            <div style="color: #c084fc; font-weight: bold; margin-bottom: 10px;">🔓 Researcher Activated</div>
+                            <div style="font-size: 0.9em; color: #cbd5e1;">
+                                Authorized to submit threat intelligence to the network
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vetting Criteria -->
+                <div style="background: rgba(56, 189, 248, 0.05); border: 2px solid #38bdf8; border-radius: 12px; padding: 25px; margin-top: 20px;">
+                    <h3 style="color: #38bdf8; margin-bottom: 20px;">🎯 Vetting Criteria: "Whole-Person Concept"</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                            <div style="color: #7dd3fc; font-weight: bold; margin-bottom: 8px;">🎓 Expertise & Quality</div>
+                            <div style="font-size: 0.9em; color: #cbd5e1;">Proven technical knowledge and high-quality analysis capabilities</div>
+                        </div>
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                            <div style="color: #7dd3fc; font-weight: bold; margin-bottom: 8px;">🛡️ Trustworthiness</div>
+                            <div style="font-size: 0.9em; color: #cbd5e1;">History of accurate reporting and reliable information sharing</div>
+                        </div>
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                            <div style="color: #7dd3fc; font-weight: bold; margin-bottom: 8px;">🆔 Identity Verification</div>
+                            <div style="font-size: 0.9em; color: #cbd5e1;">Multi-source validation of individual or organizational identity</div>
+                        </div>
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                            <div style="color: #7dd3fc; font-weight: bold; margin-bottom: 8px;">📜 Community Alignment</div>
+                            <div style="font-size: 0.9em; color: #cbd5e1;">Commitment to guidelines and ethical intelligence sharing practices</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Why This Matters -->
+                <div style="background: rgba(251, 191, 36, 0.05); border: 2px solid #fbbf24; border-radius: 12px; padding: 25px; margin-top: 20px;">
+                    <h3 style="color: #fbbf24; margin-bottom: 20px;">⚠️ Why Rigorous Vetting is Critical</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 2.5em; margin-bottom: 10px;">🎯</div>
+                            <div style="color: #fcd34d; font-weight: bold; margin-bottom: 8px;">Quality Control</div>
+                            <div style="font-size: 0.85em; color: #cbd5e1;">Prevents false positives and alert fatigue</div>
+                        </div>
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 2.5em; margin-bottom: 10px;">🚫</div>
+                            <div style="color: #fcd34d; font-weight: bold; margin-bottom: 8px;">Attack Prevention</div>
+                            <div style="font-size: 0.85em; color: #cbd5e1;">Stops data poisoning and reputation attacks</div>
+                        </div>
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 2.5em; margin-bottom: 10px;">🤝</div>
+                            <div style="color: #fcd34d; font-weight: bold; margin-bottom: 8px;">Trust Building</div>
+                            <div style="font-size: 0.85em; color: #cbd5e1;">Creates reliable community of verified experts</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Benefits -->
+        <div class="section">
+            <h2>6. Key Technical Benefits Visualization</h2>
+            <div class="diagram">
+                <div class="architecture-grid">
+                    <div class="layer" style="background: rgba(56, 189, 248, 0.1); border-color: #38bdf8;">
+                        <div class="layer-title" style="color: #38bdf8;">🔒 Immutability</div>
+                        <div class="layer-desc">Data cannot be altered or deleted once recorded on blockchain</div>
+                    </div>
+                    <div class="layer" style="background: rgba(251, 191, 36, 0.1); border-color: #fbbf24;">
+                        <div class="layer-title" style="color: #fbbf24;">🌐 Decentralization</div>
+                        <div class="layer-desc">No single point of failure or control by any entity</div>
+                    </div>
+                    <div class="layer" style="background: rgba(34, 197, 94, 0.1); border-color: #22c55e;">
+                        <div class="layer-title" style="color: #22c55e;">👁️ Transparency</div>
+                        <div class="layer-desc">All threat data publicly auditable by anyone</div>
+                    </div>
+                    <div class="layer" style="background: rgba(168, 85, 247, 0.1); border-color: #a855f7;">
+                        <div class="layer-title" style="color: #a855f7;">✅ Authenticity</div>
+                        <div class="layer-desc">Cryptographic signatures verify researcher identity</div>
+                    </div>
+                    <div class="layer" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                        <div class="layer-title" style="color: #ef4444;">🚫 Censorship Resistant</div>
+                        <div class="layer-desc">Impossible for authorities to remove or alter data</div>
+                    </div>
+                    <div class="layer" style="background: rgba(6, 182, 212, 0.1); border-color: #06b6d4;">
+                        <div class="layer-title" style="color: #06b6d4;">⚡ Global Access</div>
+                        <div class="layer-desc">24/7 availability from anywhere in the world</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

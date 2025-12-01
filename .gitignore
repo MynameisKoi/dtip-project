@@ -1,0 +1,14 @@
+# Dependency folders
+node_modules/
+
+# Environment variables (SECRETS)
+.env
+
+# Hardhat Build Artifacts & Cache (Auto-generated)
+artifacts/
+cache/
+typechain-types/
+coverage/
+
+# System files
+.DS_Store

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTIP on Ethereum - Presentation</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #0b1120; /* Deep Navy/Black */
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --accent-green: #10b981; /* Success/Safe */
+            --accent-cyan: #06b6d4; /* Ethereum/Tech */
+            --accent-red: #ef4444; /* Threat/Slashing */
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Presentation Container */
+        .deck-container {
+            width: 100%;
+            max-width: 1200px;
+            aspect-ratio: 16/9;
+            background: radial-gradient(circle at top right, #1e293b 0%, #0b1120 100%);
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Slide Styles */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px 60px; /* Reduced padding for image slides */
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.5s ease-in-out;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+            z-index: 10;
+        }
+
+        .slide.previous {
+            transform: translateX(-100px);
+            opacity: 0;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.5rem;
+            background: linear-gradient(to right, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-green);
+            padding-left: 20px;
+        }
+
+        h3 {
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        /* Layout Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* Specific layout for image slides to maximize space */
+        .image-slide-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            align-items: center;
+        }
+
+        .diagram-container {
+            flex-grow: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .diagram-img {
+            max-width: 100%;
+            max-height: 55vh; /* Limit height so it fits */
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-cyan);
+        }
+
+        .icon-box {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-green);
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 20;
+        }
+
+        .btn-nav {
+            background: var(--accent-cyan);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--bg-color);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .btn-nav:hover {
+            background: var(--accent-green);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: var(--accent-cyan);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 25px;
+            left: 40px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #64748b;
+        }
+
+        /* Tokenomics Bar */
+        .token-bar-container {
+            width: 100%;
+            height: 40px;
+            background: #334155;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            margin-top: 20px;
+        }
+        .token-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0b1120;
+            transition: width 1s ease-out;
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="deck-container">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active">
+        <div style="text-align: center;">
+            <div style="font-size: 4rem; color: var(--accent-green); margin-bottom: 20px;">
+                <i class="fa-brands fa-ethereum"></i>
+            </div>
+            <h1>A Decentralized Threat Intelligence Platform</h1>
+            <h3 style="color: var(--accent-cyan); font-family: 'JetBrains Mono'">DTIP on Ethereum</h3>
+            <br>
+            <p style="color: #94a3b8;">Khoi Duong | Prof. Hossain | CS572</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Problem -->
+    <div class="slide">
+        <h2>The Fragility of Centralization</h2>
+        <div class="grid-2">
+            <div style="padding-right: 20px;">
+                <p>Current cybersecurity relies on centralized authorities (DNS registrars, hosting providers) to take down malicious infrastructure.</p>
+                <br>
+                <div class="card" style="border-left: 4px solid var(--accent-red);">
+                    <h3><i class="fa-solid fa-triangle-exclamation"></i> Vulnerabilities</h3>
+                    <ul>
+                        <li style="margin: 10px 0;"><strong>Single Point of Failure:</strong> Easy to target or coerce.</li>
+                        <li style="margin: 10px 0;"><strong>Censorship:</strong> Valid security research can be blocked.</li>
+                        <li style="margin: 10px 0;"><strong>Jurisdiction Issues:</strong> Legal orders vary by country.</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <i class="fa-solid fa-server" style="font-size: 8rem; color: #475569;"></i>
+                <div style="color: var(--accent-red); font-size: 4rem; margin-top: -80px; position: relative;">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+                <p style="margin-top: 20px;">Centralized Takedown</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Solution -->
+    <div class="slide">
+        <h2>The Solution: DTIP on Ethereum</h2>
+        <div class="grid-2">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <i class="fa-brands fa-ethereum" style="font-size: 10rem; color: var(--accent-cyan); filter: drop-shadow(0 0 15px var(--accent-cyan));"></i>
+            </div>
+            <div>
+                <p>Moving Threat Intelligence to the Blockchain creates a system that is:</p>
+                <div class="card" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-link" style="color: var(--accent-green)"></i> <strong>Immutable</strong>
+                    <p style="font-size: 0.9rem; margin:0;">Data cannot be retrospectively altered to cover tracks.</p>
+                </div>
+                <div class="card" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--accent-green)"></i> <strong>Censorship Resistant</strong>
+                    <p style="font-size: 0.9rem; margin:0;">No single entity can suppress the data.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-globe" style="color: var(--accent-green)"></i> <strong>Global Availability</strong>
+                    <p style="font-size: 0.9rem; margin:0;">Permanent uptime for defensive systems.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Objectives -->
+    <div class="slide">
+        <h2>System Objectives</h2>
+        <div class="grid-3">
+            <div class="card">
+                <div class="icon-box"><i class="fa-solid fa-network-wired"></i></div>
+                <h3>Eliminate SPoF</h3>
+                <p style="font-size: 0.9rem;">Distribute data so it cannot be taken down by targeting one node.</p>
+            </div>
+            <div class="card">
+                <div class="icon-box"><i class="fa-solid fa-file-contract"></i></div>
+                <h3>Data Integrity</h3>
+                <p style="font-size: 0.9rem;">Record hashes of reports to ensure history is never manipulated.</p>
+            </div>
+            <div class="card">
+                <div class="icon-box"><i class="fa-solid fa-users-viewfinder"></i></div>
+                <h3>Democratize</h3>
+                <p style="font-size: 0.9rem;">Allow small orgs access to high-fidelity intel usually reserved for enterprises.</p>
+            </div>
+            <div class="card">
+                <div class="icon-box"><i class="fa-solid fa-coins"></i></div>
+                <h3>Incentivize</h3>
+                <p style="font-size: 0.9rem;">Solve the "free-rider" problem with "Contribute-to-Earn".</p>
+            </div>
+            <div class="card">
+                <div class="icon-box"><i class="fa-solid fa-user-secret"></i></div>
+                <h3>Privacy</h3>
+                <p style="font-size: 0.9rem;">Share attack signatures via pseudonymous addresses.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Use Case Diagram (IMAGE) -->
+    <div class="slide">
+        <div class="image-slide-layout">
+            <h2>System Use Cases</h2>
+            <div class="diagram-container">
+                <img src="images/Untitled diagram-2025-11-29-181905.png" alt="Use Case Diagram" class="diagram-img" onerror="this.src='https://placehold.co/600x400?text=Image+Not+Found\nPut+Untitled+diagram-2025-11-29-181905.png\nin+folder'">
+            </div>
+            <p style="text-align: center; font-size: 0.9rem; margin-top: 10px;">
+                The primary actors are the <strong>Administrator</strong> (Governance), <strong>Researcher</strong> (Contributor), and <strong>Consumer</strong> (User).
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 6: System Workflow (IMAGE) -->
+    <div class="slide">
+        <div class="image-slide-layout">
+            <h2>Overall System Workflow</h2>
+            <div class="diagram-container">
+                <img src="images/Untitled diagram-2025-11-29-182430.png" alt="System Workflow" class="diagram-img" onerror="this.src='https://placehold.co/600x400?text=Image+Not+Found\nPut+Untitled+diagram-2025-11-29-182430.png\nin+folder'">
+            </div>
+            <div class="grid-3" style="margin-top: 10px; gap: 10px; width: 100%;">
+                <div class="card" style="padding: 10px; text-align: center;">
+                    <small style="color: var(--accent-cyan)">Phase 1</small><br>Vetting
+                </div>
+                <div class="card" style="padding: 10px; text-align: center;">
+                    <small style="color: var(--accent-cyan)">Phase 2</small><br>Submission
+                </div>
+                <div class="card" style="padding: 10px; text-align: center;">
+                    <small style="color: var(--accent-cyan)">Phase 3</small><br>Query
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Detailed Onboarding (IMAGE) -->
+    <div class="slide">
+        <div class="image-slide-layout">
+            <h2>Phase 1: Researcher Onboarding</h2>
+            <div class="diagram-container">
+                <img src="images/Untitled diagram-2025-11-30-071418.png" alt="Onboarding Sequence" class="diagram-img" onerror="this.src='https://placehold.co/600x400?text=Image+Not+Found\nPut+Untitled+diagram-2025-11-30-071418.png\nin+folder'">
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 10px;">
+                Includes off-chain vetting by admin, on-chain role granting, and mandatory token staking.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 8: Detailed Submission (IMAGE) -->
+    <div class="slide">
+        <div class="image-slide-layout">
+            <h2>Phase 2: Data Submission</h2>
+            <div class="diagram-container">
+                <img src="images/Untitled diagram-2025-11-29-181348.png" alt="Submission Sequence" class="diagram-img" onerror="this.src='https://placehold.co/600x400?text=Image+Not+Found\nPut+Untitled+diagram-2025-11-29-181348.png\nin+folder'">
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 10px;">
+                Researchers sign data off-chain to save gas. The contract verifies the signature via <code>ecrecover</code> before storing.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 9: Detailed Query (IMAGE) -->
+    <div class="slide">
+        <div class="image-slide-layout">
+            <h2>Phase 3: Public Query</h2>
+            <div class="diagram-container">
+                <img src="images/Untitled diagram-2025-11-30-073230.png" alt="Query Sequence" class="diagram-img" onerror="this.src='https://placehold.co/600x400?text=Image+Not+Found\nPut+Untitled+diagram-2025-11-30-073230.png\nin+folder'">
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 10px;">
+                Consumers calculate the report hash locally and query the contract. This is a read-only (gasless) operation.
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 10: Tokenomics -->
+    <div class="slide">
+        <h2>Tokenomics: The Carrot & The Stick</h2>
+        <div class="grid-2">
+            <div>
+                <h3 style="color: var(--accent-green)">The Carrot (Incentives)</h3>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 10px;"><i class="fa-solid fa-arrow-up" style="color: var(--accent-green)"></i> <strong>Submission Rewards:</strong> Baseline for new IOCs.</li>
+                    <li style="margin-bottom: 10px;"><i class="fa-solid fa-arrow-up" style="color: var(--accent-green)"></i> <strong>Validation Rewards:</strong> For verifying others' work.</li>
+                    <li style="margin-bottom: 10px;"><i class="fa-solid fa-arrow-up" style="color: var(--accent-green)"></i> <strong>Effectiveness Bonus:</strong> Released when Consumers confirm the block was useful.</li>
+                </ul>
+            </div>
+            <div>
+                <h3 style="color: var(--accent-red)">The Stick (Penalties)</h3>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 10px;"><i class="fa-solid fa-lock" style="color: var(--accent-red)"></i> <strong>Staking:</strong> Researchers must lock tokens to join.</li>
+                    <li style="margin-bottom: 10px;"><i class="fa-solid fa-scissors" style="color: var(--accent-red)"></i> <strong>Slashing:</strong> If false data is submitted, the DAO votes to burn the staked tokens.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="token-bar-container">
+            <div class="token-segment" style="width: 20%; background: var(--accent-cyan);">Utility</div>
+            <div class="token-segment" style="width: 50%; background: var(--accent-green);">Rewards Pool</div>
+            <div class="token-segment" style="width: 30%; background: #334155; color: white;">Staked (Locked)</div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Outcomes -->
+    <div class="slide">
+        <h2>Expected Outcomes</h2>
+        <div class="grid-2">
+            <div class="card" style="text-align: center;">
+                <i class="fa-solid fa-gauge-high" style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 20px;"></i>
+                <h3>Lower MTTD & MTTR</h3>
+                <p>Real-time ledger access drastically reduces Mean Time to Detect and Respond.</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <i class="fa-solid fa-filter" style="font-size: 3rem; color: var(--accent-green); margin-bottom: 20px;"></i>
+                <h3>Reduced Noise</h3>
+                <p>Reputation-based vetting reduces "alert fatigue" and false positives compared to automated scraping.</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <i class="fa-solid fa-book-journal-whills" style="font-size: 3rem; color: #f59e0b; margin-bottom: 20px;"></i>
+                <h3>Source of Truth</h3>
+                <p>A historical, immutable archive for long-term forensic analysis.</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <i class="fa-solid fa-money-bill-trend-up" style="font-size: 3rem; color: #a855f7; margin-bottom: 20px;"></i>
+                <h3>Researcher Economy</h3>
+                <p>Direct monetization of expertise attracts more talent to the field.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Roadmap -->
+    <div class="slide">
+        <h2>Future Roadmap</h2>
+        <div class="grid-2" style="align-items: center;">
+            <div>
+                <ul>
+                    <li style="font-size: 1.5rem; margin-bottom: 20px;"><i class="fa-solid fa-people-group" style="color: var(--accent-cyan)"></i> <strong>DAO Governance:</strong> Remove the single Admin. Move to community voting.</li>
+                    <li style="font-size: 1.5rem; margin-bottom: 20px;"><i class="fa-solid fa-eye" style="color: var(--accent-cyan)"></i> <strong>Oracles:</strong> Automate data ingestion from external sources.</li>
+                    <li style="font-size: 1.5rem; margin-bottom: 20px;"><i class="fa-solid fa-layer-group" style="color: var(--accent-cyan)"></i> <strong>Cross-Chain:</strong> Expand beyond Ethereum for scalability.</li>
+                </ul>
+            </div>
+            <div style="text-align: center;">
+                <h1>Thank You</h1>
+                <p>Questions?</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-number">Slide <span id="current-slide">1</span> / <span id="total-slides">12</span></div>
+    <div class="progress-bar" id="progress"></div>
+
+    <div class="controls">
+        <button class="btn-nav" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="btn-nav" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideEl = document.getElementById('current-slide');
+    const totalSlidesEl = document.getElementById('total-slides');
+    const progressBar = document.getElementById('progress');
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+
+    totalSlidesEl.textContent = totalSlides;
+
+    function updateSlide() {
+        slides.forEach((slide, index) => {
+            slide.classList.remove('active', 'previous');
+            if (index === currentIndex) {
+                slide.classList.add('active');
+            } else if (index < currentIndex) {
+                slide.classList.add('previous');
+            }
+        });
+
+        // Update Numbers
+        currentSlideEl.textContent = currentIndex + 1;
+
+        // Update Progress Bar
+        const progress = ((currentIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        // Handle Tokenomics Animation (Slide index 9 now)
+        if (currentIndex === 9) {
+           setTimeout(() => {
+               document.querySelectorAll('.token-segment').forEach(seg => {
+                   const w = seg.style.width;
+                   seg.style.width = '0';
+                   setTimeout(() => seg.style.width = w, 50);
+               });
+           }, 100);
+        }
+    }
+
+    function nextSlide() {
+        if (currentIndex < totalSlides - 1) {
+            currentIndex++;
+            updateSlide();
+        }
+    }
+
+    function prevSlide() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateSlide();
+        }
+    }
+
+    // Event Listeners
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // Initialize
+    updateSlide();
+</script>
+
+</body>
+</html>
