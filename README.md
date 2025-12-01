@@ -4,13 +4,13 @@
 
 - [Abstract](#abstract)
 - [Overview](#overview)
-- [System Architecture](#🏗-system-architecture)
-- [Smart Contracts](#📄-smart-contracts)
+- [System Architecture](#system-architecture)
+- [Smart Contracts](#smart-contracts)
 - [Workflow Visualization](#workflow-visualization)
-- [Participant Roles](#👥-participant-roles)
-- [Tokenomics Model (inferred from contract structure)](#💎-tokenomics-model-inferred-from-contract-structure)
-- [Tech Stack](#🛠-tech-stack)
-- [Local Setup & Quick Start](#🚀-local-setup-and-quick-start)
+- [Participant Roles](#participant-roles)
+- [Tokenomics Model (inferred from contract structure)](#tokenomics-model-inferred-from-contract-structure)
+- [Tech Stack](#tech-stack)
+- [Local Setup & Quick Start](#local-setup-and-quick-start)
 
 ## Abstract
 
@@ -21,14 +21,14 @@ Traditional centralized threat intelligence systems are vulnerable to single poi
 - **Project:** Decentralized Threat Intelligence Platform (DTIP)
 - **Purpose:** A blockchain-based registry for sharing, purchasing, and rewarding threat intelligence. Researchers publish intelligence entries; Consumers pay to access high-value data; Administrators manage the platform and take a platform commission. Access control is implemented with OpenZeppelin's `AccessControl`.
 
-## 🏗 System Architecture
+## System Architecture
 
 - **Smart Contracts:** Located in `contracts/` with the main contract `ThreatIntelRegistry.sol` and OpenZeppelin `AccessControl.sol` used for role management. Compiled artifacts are available in `artifacts/` and TypeScript bindings under `typechain-types/`.
 - **Backend / Scripts:** Deployment and interactions are scripted in `deploy/` and `scripts/` (for example, `deploy/01-deploy-threat-intel-registry.ts` and `scripts/interaction-workflow.ts`).
 - **Tests:** Unit tests are under `test/` (e.g., `ThreatIntelRegistry.test.ts`).
 - **Tooling:** Built with Hardhat (`hardhat.config.ts`). Use `npm` to install dependencies and `npx hardhat` to run tests and scripts.
 
-## 📄 Smart Contracts
+## Smart Contracts
 
 1. **AccessControl.sol:** _Manages permissions and governance_
 
@@ -48,7 +48,7 @@ Traditional centralized threat intelligence systems are vulnerable to single poi
 - **Phase 2 (Submission):** Researcher signs data off-chain → Submits to Contract → Contract Verifies & Stores → Tokens Rewarded.
 - **Phase 3 (Defense):** Consumer calculates hash locally → Queries Contract (Gasless) → Automates Defense blocks.
 
-## 👥 Participant Roles
+## Participant Roles
 
 - **Admin (Governance / Platform Owner):**
   - Managed by the `DEFAULT_ADMIN_ROLE` or a similar admin role provided by `AccessControl`.
@@ -63,14 +63,14 @@ Traditional centralized threat intelligence systems are vulnerable to single poi
   - Pays in the network's native currency (ETH) or an ERC-20 token, depending on the contract implementation.
 
 ### Roles Table
-| Role | Responsibility | Access Level |
-|--------|----------|---------|
-| `Administrator` | Vetting & Governance | `DEFAULT_ADMIN_ROLE` |
-| `Researcher` | Threat Detection & Submission | `RESEARCHER_ROLE` (Requires Staking)
-| `Consumer` | Integration & Defense | Public read access |
 
+| Role            | Responsibility                | Access Level                         |
+| --------------- | ----------------------------- | ------------------------------------ |
+| `Administrator` | Vetting & Governance          | `DEFAULT_ADMIN_ROLE`                 |
+| `Researcher`    | Threat Detection & Submission | `RESEARCHER_ROLE` (Requires Staking) |
+| `Consumer`      | Integration & Defense         | Public read access                   |
 
-## 💎 Tokenomics Model (inferred from contract structure)
+## Tokenomics Model (inferred from contract structure)
 
 **_Note:_** the precise variable and function names live inside `contracts/ThreatIntelRegistry.sol`. The model below is a clear, practical interpretation of how token flows are typically handled by a registry that uses `AccessControl` and sells intel entries.
 
@@ -108,16 +108,17 @@ Traditional centralized threat intelligence systems are vulnerable to single poi
 - `test/ThreatIntelRegistry.test.ts` : Unit tests that document expected behaviour and edge cases — consult to confirm exact variable names and flows.
 - `typechain-types/` : Generated TypeScript contract types for easier interaction from scripts and frontends.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Blockchain:** Ethereum (EVM Compatible)
 - **Smart Contracts:** Solidity
 - **Hashing:** Keccak256
 - **Signature Verification:** ECDSA (ecrecover)
 
-## 🚀 Local Setup & Quick Start
+## Local Setup & Quick Start
 
 For more details on debugging and setup guide, please refer the detailed guide: [CS572 DTIP WITH SOLIDITY.pdf](CS572%20DTIP%20WITH%20SOLIDITY.pdf)
+
 - **Pre-requisites:** `node` (>=18 recommended), `npm`, `git`, and a local Ethereum node (Hardhat's local network is included).
 - **Install dependencies:**
 
@@ -127,6 +128,7 @@ npm install
 ```
 
 - **Environment Variables:**
+
 ```bash
 SEPOLIA_RPC_URL="https://mainnet.infura.io/v3/your_id"
 PRIVATE_KEY="your_meta_mask_api_key"
@@ -183,10 +185,10 @@ npx hardhat run --network localhost scripts/interaction-workflow.ts
 - This README describes structure and token flows inferred from the presence of `ThreatIntelRegistry.sol` and `AccessControl` in this repo. For exact variable names, percentages, and function signatures, review `contracts/ThreatIntelRegistry.sol`, `deploy/01-deploy-threat-intel-registry.ts`, and `test/ThreatIntelRegistry.test.ts`.
 - No ERC-20 token contract was present in `contracts/` at the time of writing. If token-based payments are required, integrate or reference an ERC-20 contract in `contracts/` and update the deployment script.
 
-
 ## Screenshots & Debug
 
 ### `npm hardhat init` error
+
 ![npm hardhit init](images/1.png)
 
 After fix
@@ -199,13 +201,16 @@ Choose ‘Create an empty hardhat.config.js’
 ![create config](images/3.png)
 
 ### Compile the files
+
 ![compile](images/4.png)
 
 ### Start the node
+
 On Terminal 1, run `npm hardhat node` to start the node. <br>
 ![node](images/5.png)
 
 ### Deployment
+
 On Terminal 2, run `npx hardhat deploy --network localhost` <br>
 In case of failing the test, reset the deployment with `npx hardhat deploy --network localhost  --reset`
 ![6.png](images/6.png)
@@ -213,6 +218,7 @@ Then, run this command when done `npx hardhat run scripts/interaction-workflow.t
 ![7.png](images/7.png)
 
 ### Testing
+
 Command: `npx hardhat test`
 ![8.png](images/8.png)
 
