@@ -191,7 +191,7 @@ npx hardhat run --network localhost scripts/interaction-workflow.ts
 
 ![npm hardhit init](images/1.png)
 
-After fix
+After fix <br>
 ![npm hardhit fix](images/2.png)
 
 Success!
@@ -213,7 +213,7 @@ On Terminal 1, run `npm hardhat node` to start the node. <br>
 
 On Terminal 2, run `npx hardhat deploy --network localhost` <br>
 In case of failing the test, reset the deployment with `npx hardhat deploy --network localhost  --reset`
-![6.png](images/6.png)
+![6.png](images/6.png) <br>
 Then, run this command when done `npx hardhat run scripts/interaction-workflow.ts --network localhost` <br>
 ![7.png](images/7.png)
 
